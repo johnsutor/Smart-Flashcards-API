@@ -41,7 +41,7 @@ def initialize_learning_episode(num_cards, num_steps=10, arm_count=None, q_table
   }
 
 # Function for updating the user's q table
-def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_cards, q_table, correct=False, num_steps=10):
+def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_cards, q_table, correct, num_steps=10):
   '''
   Provides an API-callable function to complete reinforcement
   learning. It must be called with the following parameters:
@@ -57,9 +57,7 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
   '''
 
   # Interpret the buffer to a one dimensional array
-  q_table = np.frombuffer(q_table, dtype=float)
-  arm_count = np.frombuffer(arm_count, dtype=int)
-  chosen_actions = np.frombuffer(chosen_actions, dtype=int)
+  q_table, arm_count, chosen_actions = np.frombuffer(q_table, dtype=float), np.frombuffer(arm_count, dtype=int), np.frombuffer(chosen_actions, dtype=int)
   
   # Create an array of the index of all max values
   available_action_array = []
