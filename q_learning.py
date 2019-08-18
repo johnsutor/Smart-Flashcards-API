@@ -32,16 +32,19 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
   else:
     action = np.random.randint(0, num_cards)
 
-  # Convert arrays to a buffer
+  # Convert arrays to a list
   q_table = q_table.tolist()
   arm_count = arm_count.tolist()
+  chosen_actions = []
+  chosen_actions.append(action)
 
   print(action, ' ', q_table, ' ', arm_count)
   
   return {
     'action': action,
     'q_table': q_table,
-    'arm_count': arm_count
+    'arm_count': arm_count,
+    'chosen_actions':chosen_actions
   }
 
 # Function for updating the user's q table
@@ -60,21 +63,20 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
   @returns: Updated values for the above parameters
   '''
 
-  # Interpret the buffer to a one dimensional array
-  q_table, arm_count, chosen_actions = np.frombuffer(q_table, dtype=float), np.frombuffer(arm_count, dtype=int), np.frombuffer(chosen_actions, dtype=int)
+  # Interpret the arrays as numpy arrays
+  q_table, arm_count, chosen_actions = np.asarray(q_table, dtype=float), np.asarray(arm_count, dtype=int), np.asarray(chosen_actions, dtype=int)
   
   # Create an array of the index of all max values
   available_action_array = []
-  for a in range(len(q_table)):
-    available_action_array.append(np.argmax(q_table))
-    available_action_array = [action for action in available_action_array if action not in chosen_actions]
+  available_action_array.append(np.argmax(q_table))
+  available_action_array = [action for action in available_action_array if action not in chosen_actions]
 
   # Choose an action to take
   if np.random.random() > EPSILON:
     action = available_action_array[0]
   else:
     action = available_action_array[np.random.randint(0, len(available_action_array))]
-  chosen_actions.append(action)
+  np.append(chosen_actions, action)
   
   # Determine the reward
   if correct:
@@ -88,7 +90,8 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
   step += 1
 
   # Convert all arrays back to buffers
-  q_table, arm_count, chosen_actions = q_table.tostring(), arm_count.tostring(), chosen_actions.tostring()
+  q_table, arm_count, chosen_actions = q_table.tolist(), arm_count.tolist(), chosen_actions.tolist()
+  action = int(action)
 
   # Return the updated values
   return {

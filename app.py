@@ -41,7 +41,8 @@ def step_episode():
     abort(400)
   
   # Check that all values are present
-  similarities = [param for param in STEP_EPISODE_REQ not in request.json]
+  similarities = [i for i, j in zip(STEP_EPISODE_REQ,  list(request.json.keys())) if i != j]
+  print(similarities)
   if len(similarities) > 0:
     abort(400)
 
