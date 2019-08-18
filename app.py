@@ -20,11 +20,12 @@ def bad_request(error):
 # Initializes the learning episode
 @app.route('/api/v1.0/flashcards/initialize', methods=['POST'])
 def initialize_episode():
-    if not request.json or not 'num_cards' in request.json:
+    if not request.json or not "num_cards" in request.json:
       abort(400)
 
     # Call the episode function
-    res = initialize_learning_episode(request.json['num_cards'], request.json['num_steps'], request.json['arm_count'])
+    res = initialize_learning_episode(request.json["num_cards"], request.json['num_steps'], request.json['arm_count'], request.json['q_table'])
+    print(f"initial request {request.json} outgoing response {res}")
     return jsonify(res)
 
     # TODO: Call the q-learning function
