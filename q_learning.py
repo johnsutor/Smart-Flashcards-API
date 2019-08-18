@@ -18,13 +18,13 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
   @param q_table: the q table to use within the 
   @returns: Updated values for the above parameters
   '''
-  if kwargs is not None:
-    q_table = np.frombuffer(kwargs['q_table'], dtype=float) 
-    arm_count = np.frombuffer(kwargs['arm_count'], dtype=int)
+  if kwargs:
+    q_table = np.asarray(kwargs['q_table'], dtype=float)
+    arm_count = np.asarray(kwargs['arm_count'], dtype=int)
   else:
     # Generate a Q table and an arm counter
     q_table = np.random.rand(1, num_cards)
-    arm_count = [0] * num_cards
+    arm_count = np.asarray([0] * num_cards, dtype=int)
 
   # Choose an action to take
   if np.random.random() > EPSILON:
@@ -33,8 +33,10 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
     action = np.random.randint(0, num_cards)
 
   # Convert arrays to a buffer
-  q_table = q_table.tostring()
-  arm_count = arm_count.tostring()
+  q_table = q_table.tolist()
+  arm_count = arm_count.tolist()
+
+  print(action, ' ', q_table, ' ', arm_count)
   
   return {
     'action': action,

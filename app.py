@@ -20,19 +20,19 @@ def bad_request(error):
 # Initializes the learning episode
 @app.route('/api/v1.0/flashcards/initialize', methods=['POST'])
 def initialize_episode():
-    if not request.json or not "num_cards" in request.json:
-      abort(400)
-    
-    req = request.json
+  if not request.json or not "num_cards" in request.json or not "num_steps" in request.json:
+    abort(400)
+  
+  req = request.json
 
-    # Call the episode function
-    if "arm_count" in req and "q_table" in req:
-      res = initialize_learning_episode(req["num_cards"], req['num_steps'], arm_count=req['arm_count'], q_table=req['q_table'])
-      return jsonify(res)
+  # Call the episode function
+  if "arm_count" in req and "q_table" in req:
+    res = initialize_learning_episode(req["num_cards"], req['num_steps'], arm_count=req['arm_count'], q_table=req['q_table'])
+    return jsonify(res)
 
-    else:
-      res = initialize_learning_episode(req["num_cards"], req['num_steps'])
-      return jsonify(res)
+  else:
+    res = initialize_learning_episode(req["num_cards"], req['num_steps'])
+    return jsonify(res)
 
 # Steps the learning episode
 @app.route('/api/v1.0/flashcards/step', methods=['POST'])
@@ -49,7 +49,7 @@ def step_episode():
 
   # Call the step function
   res = step_learning_episode(req['step'], req['chosen_actions'], req['arm_count'], req['previous_action'], req['num_cards'], req['q_table'], req['correct'], req['num_steps'])
-  
+  return jsonify(res)
 
 if(__name__ == '__main__'):
   app.run(debug=True)
