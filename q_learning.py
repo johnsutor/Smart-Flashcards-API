@@ -8,7 +8,7 @@ INCORRECT_REWARD = 1
 EPSILON = 0.8
 
 # Function for initializing an episode
-def initialize_learning_episode(num_cards, num_steps=10, arm_count=None, q_table=None):
+def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
   '''
   Provides an API-callable function to initialize reinforcement
   learning. It must be called with the following parameters:
@@ -18,21 +18,23 @@ def initialize_learning_episode(num_cards, num_steps=10, arm_count=None, q_table
   @param q_table: the q table to use within the 
   @returns: Updated values for the above parameters
   '''
-  # Generate a new Q table if none exist
-  if q_table is None:
+  if kwargs is not None:
+    q_table = np.frombuffer(kwargs['q_table'], dtype=float) 
+    arm_count = np.frombuffer(kwargs['arm_count'], dtype=int)
+  else:
+    # Generate a Q table and an arm counter
     q_table = np.random.rand(1, num_cards)
-    q_table = q_table.tostring()
-
-  # Generate a new arm counter if none exist
-  if arm_count is None:
     arm_count = [0] * num_cards
-    arm_count = arm_count.tostring()
 
   # Choose an action to take
   if np.random.random() > EPSILON:
     action = np.argmax(q_table)
   else:
     action = np.random.randint(0, num_cards)
+
+  # Convert arrays to a buffer
+  q_table = q_table.tostring()
+  arm_count = arm_count.tostring()
   
   return {
     'action': action,

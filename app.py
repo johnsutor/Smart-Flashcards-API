@@ -24,11 +24,14 @@ def initialize_episode():
       abort(400)
 
     # Call the episode function
-    res = initialize_learning_episode(request.json["num_cards"], request.json['num_steps'], request.json['arm_count'], request.json['q_table'])
-    print(f"initial request {request.json} outgoing response {res}")
-    return jsonify(res)
+    if "arm_count" in request.json and "q_table" in request.json:
+      res = initialize_learning_episode(request.json["num_cards"], request.json['num_steps'], arm_count=request.json['arm_count'], q_table=request.json['q_table'])
+      return jsonify(res)
 
-    # TODO: Call the q-learning function
+    else:
+      res = initialize_learning_episode(request.json["num_cards"], request.json['num_steps'])
+      print(f"initial request {request.json} outgoing response {res}")
+      return jsonify(res)
 
 # Steps the learning episode
 @app.route('/api/v1.0/flashcards/step', methods=['POST'])
