@@ -23,7 +23,7 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
     arm_count = np.asarray(kwargs['arm_count'], dtype=int)
   else:
     # Generate a Q table and an arm counter
-    q_table = np.random.rand(1, num_cards)
+    q_table = np.random.rand(num_cards)
     arm_count = np.asarray([0] * num_cards, dtype=int)
 
   # Choose an action to take
@@ -31,14 +31,13 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
     action = np.argmax(q_table)
   else:
     action = np.random.randint(0, num_cards)
+  arm_count[action] += 1
 
   # Convert arrays to a list
   q_table = q_table.tolist()
   arm_count = arm_count.tolist()
   chosen_actions = []
   chosen_actions.append(action)
-
-  print(action, ' ', q_table, ' ', arm_count)
   
   return {
     'action': action,
@@ -68,9 +67,13 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
   
   # Create an array of the index of all max values
   available_action_array = []
-  available_action_array.append(np.argmax(q_table))
+  q_table_temp = np.copy(q_table)
+  for act in range(len(q_table)):
+    available_action_array.append(np.argmax(q_table_temp))
+    q_table_temp[np.argmax(q_table_temp)] = float("-inf")
   available_action_array = [action for action in available_action_array if action not in chosen_actions]
 
+  print(f"available actions: {available_action_array}, q_table {q_table}")
   # Choose an action to take
   if np.random.random() > EPSILON:
     action = available_action_array[0]
@@ -85,8 +88,9 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
     reward = INCORRECT_REWARD
 
   # Recalculate the Q table based on if the user got the previous question right
-  arm_count[previous_action] += 1
+  arm_count[action] += 1
   q_table[previous_action] += (1 / arm_count[previous_action]) * (reward - q_table[previous_action])
+  print(f"previous action: {(1 / arm_count[previous_action]) * (reward - q_table[previous_action])} reward: {reward} q val: {q_table[previous_action]}")
   step += 1
 
   # Convert all arrays back to buffers
