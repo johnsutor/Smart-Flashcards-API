@@ -47,7 +47,7 @@ def initialize_learning_episode(num_cards, num_steps=10, **kwargs):
   }
 
 # Function for updating the user's q table
-def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_cards, q_table, correct, num_steps=10):
+def step_learning_episode(chosen_actions, arm_count, previous_action, num_cards, q_table, correct, num_steps=10):
   '''
   Provides an API-callable function to complete reinforcement
   learning. It must be called with the following parameters:
@@ -91,7 +91,6 @@ def step_learning_episode(step, chosen_actions, arm_count, previous_action, num_
   arm_count[action] += 1
   q_table[previous_action] += (1 / arm_count[previous_action]) * (reward - q_table[previous_action])
   print(f"previous action: {(1 / arm_count[previous_action]) * (reward - q_table[previous_action])} reward: {reward} q val: {q_table[previous_action]}")
-  step += 1
 
   # Convert all arrays back to buffers
   q_table, arm_count, chosen_actions = q_table.tolist(), arm_count.tolist(), chosen_actions.tolist()

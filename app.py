@@ -48,7 +48,7 @@ def step_episode():
   req = request.json
 
   # Call the step function
-  res = step_learning_episode(req['step'], req['chosen_actions'], req['arm_count'], req['previous_action'], req['num_cards'], req['q_table'], req['correct'], req['num_steps'])
+  res = step_learning_episode( req['chosen_actions'], req['arm_count'], req['previous_action'], req['num_cards'], req['q_table'], req['correct'], req['num_steps'])
   return jsonify(res)
 
 if(__name__ == '__main__'):
