@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, make_response, abort, request
 from q_learning import initialize_learning_episode, step_learning_episode
+from flask_cors import CORS
 
 # Initialize the app
 app = Flask(__name__)
+CORS(app)
 
 STEP_EPISODE_REQ = ['step', 'chosen_actions', 'arm_count', 'previous_action', 'num_cards', 'q_table', 'correct', 'num_steps']
 
