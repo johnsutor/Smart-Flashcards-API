@@ -6,13 +6,13 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-STEP_EPISODE_REQ = ['step', 'chosen_actions', 'arm_count', 'previous_action', 'num_cards', 'q_table', 'correct', 'num_steps']
+STEP_EPISODE_REQ = ['chosen_actions', 'arm_count', 'previous_action', 'num_cards', 'q_table', 'correct', 'num_steps']
 
 
 #Handle request errors
 @app.errorhandler(404)
 def not_found(error):
-    return make_response(jsonify({'error': 'Not found'}), 404)
+  return make_response(jsonify({'error': 'Not found'}), 404)
 
 @app.errorhandler(400)
 def bad_request(error):
@@ -43,8 +43,7 @@ def step_episode():
     abort(400)
   
   # Check that all values are present
-  similarities = [i for i, j in zip(STEP_EPISODE_REQ,  list(request.json.keys())) if i != j]
-  if len(similarities) > 0:
+  if set(request.json.keys()) != set(STEP_EPISODE_REQ):
     abort(400)
 
   req = request.json

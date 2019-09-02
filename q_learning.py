@@ -73,7 +73,6 @@ def step_learning_episode(chosen_actions, arm_count, previous_action, num_cards,
     q_table_temp[np.argmax(q_table_temp)] = float("-inf")
   available_action_array = [action for action in available_action_array if action not in chosen_actions]
 
-  print(f"available actions: {available_action_array}, q_table {q_table}")
   # Choose an action to take
   if np.random.random() > EPSILON:
     action = available_action_array[0]
@@ -90,7 +89,6 @@ def step_learning_episode(chosen_actions, arm_count, previous_action, num_cards,
   # Recalculate the Q table based on if the user got the previous question right
   arm_count[action] += 1
   q_table[previous_action] += (1 / arm_count[previous_action]) * (reward - q_table[previous_action])
-  print(f"previous action: {(1 / arm_count[previous_action]) * (reward - q_table[previous_action])} reward: {reward} q val: {q_table[previous_action]}")
 
   # Convert all arrays back to buffers
   q_table, arm_count, chosen_actions = q_table.tolist(), arm_count.tolist(), chosen_actions.tolist()
