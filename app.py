@@ -18,7 +18,10 @@ def not_found(error):
 def bad_request(error):
   return make_response(jsonify({'error': 'Bad request'}))
 
-
+@app.route('/')
+def index():
+  return '<h1>Welcome to the Flashcard API</h1>'
+  
 # Initializes the learning episode
 @app.route('/api/v1.0/flashcards/initialize', methods=['POST'])
 def initialize_episode():
