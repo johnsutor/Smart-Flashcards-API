@@ -20,8 +20,8 @@ def bad_request(error):
 
 @app.route('/')
 def index():
-  return '<h1>Welcome to the Flashcard API</h1>'
-  
+  return '<h1>Welcome to the Flashcard API home</h1>'
+
 # Initializes the learning episode
 @app.route('/api/v1.0/flashcards/initialize', methods=['POST'])
 def initialize_episode():
